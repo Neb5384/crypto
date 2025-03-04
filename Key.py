@@ -1,13 +1,27 @@
 
-def SendMessage(msg, Key, ask, s):
-    uMsg = Key.shiftEncode(msg, 1)
-    uMsg = Key.encodeV2(uMsg)
-    # Interaction with the server
-    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
+def sendMessage(msg, ask, s, encode,e_d, key):
+    eMsg = ""
+    match encode:
+        case "none":
+            eMsg = msg
+        case "vigenere":
+            eMsg = encodeVigenere(msg, key)
+        case "Shift":
+            eMsg = shiftEncode(msg, key)
+        case _:
+            print("Can not encode")
 
-def ReceiveMessage(s):
-    recv = s.recv(1024)
-    r = recv.decode()
+
+    # Interaction with the server
+
+    uMsg = encodeV2(eMsg)
+    s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + uMsg)
+
+
+def sendS(msg, ask, s, encode,e_d):
+    servmsg = "task " + encode +" "+ e_d +" "+ str(len(msg))
+    s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + encodeV2(servmsg))
+
 
 def encodeV2(msg):
 #Encode the message
@@ -49,12 +63,3 @@ def decodeVigenere(msg, key):
         newAscii = ((charmsg - charkey) % 8**8)
         out += chr(newAscii)
     return out
-
-
-msg = "testabc testabc testabc testabc testabc"
-key = "ABC"
-
-newmsg = encodeVigenere(msg,key)
-print(newmsg)
-
-print(decodeVigenere(newmsg,key))

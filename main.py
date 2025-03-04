@@ -10,32 +10,29 @@ msg = "ABCDEF ouf enfin ça fonctionne pas ?=+*"
 
 
 #def sendMessage(msg, ask, encoding, key)
-def InteractionWithServer(msg, ask, encode):
-    if ask == 't' or 's' or 'i':
-        ask = ask
-    else:
-        print("request unavailable")
+def InteractionWithServer(msg, ask, encode, e_d, key):
+    if ask != 't' or ask != 's' or ask != 'i':
+        print(ask[0])
 
 
 
-
-    uMsg = Key.shiftEncode(msg, 1)
-    uMsg = Key.encodeV2(msg)
-    """uMsg = Key.encodeV2(uMsg)
-    # Interaction with the server
-    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
-    recv = s.recv(1024)
-    r = recv.decode()"""
-
+    #uMsg = Key.encodeV2(msg)
+    if ask == 't':
+        Key.sendMessage(msg, ask, s, encode,e_d, key)
+    elif ask == 's' :
+        Key.sendS(msg, ask, s, encode,e_d)
 
     # Delete unecessary data
+    recv = s.recv(1024)
+    r = recv.decode()
     rcvmessage = ""
     c = 0
-    for i in  :
-        if c >= 6 :
+    for i in r:
+        if c >= 6:
             rcvmessage += i
         c += 1
     print(rcvmessage.replace("\x00", ""))
 
 
-InteractionWithServer(msg, 'j',15)
+InteractionWithServer(msg,ask = 's', encode = "vigenere",e_d = "encode", key="WATER")
+InteractionWithServer(msg,ask = 't', encode="none",e_d = "decode", key="WATER")
