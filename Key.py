@@ -46,16 +46,20 @@ def encodeVigenere(msg, key):
     lkey = list(key)
     for i in range(len(msg)):
         j = i % len(lkey)
-        charmsg = ord(lmsg[i]) - ord('A')
-        charkey = ord(lkey[j]) - ord('A')
-        newAscii = ((charmsg + charkey) % 26) + ord('A')
+        charmsg = ord(lmsg[i])
+        charkey = ord(lkey[j])
+        newAscii = ((charmsg + charkey) % 8**8)
         out += chr(newAscii)
     return out
 
-
-"""uMsg = Key.encodeV2(uMsg)
-    # Interaction with the server
-    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
-    recv = s.recv(1024)
-    r = recv.decode()"""
-
+def decodeVigenere(msg, key):
+    out = ""
+    lmsg = list(msg)
+    lkey = list(key)
+    for i in range(len(msg)):
+        j = i % len(lkey)
+        charmsg = ord(lmsg[i])
+        charkey = ord(lkey[j])
+        newAscii = ((charmsg - charkey) % 8**8)
+        out += chr(newAscii)
+    return out
