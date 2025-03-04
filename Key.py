@@ -1,12 +1,12 @@
 
-def sendMessage(msg, ask, s, encode,e_d, key):
+def sendMessage(msg, ask, s, encode, key):
     eMsg = ""
     match encode:
         case "none":
             eMsg = msg
         case "vigenere":
             eMsg = encodeVigenere(msg, key)
-        case "Shift":
+        case "shift":
             eMsg = shiftEncode(msg, key)
         case _:
             print("Can not encode")
@@ -18,11 +18,19 @@ def sendMessage(msg, ask, s, encode,e_d, key):
     s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + uMsg)
 
 
-def sendS(msg, ask, s, encode,e_d):
-    servmsg = "task " + encode +" "+ e_d +" "+ str(len(msg))
+def sendTask(leng,ask, s, encode,e_d):
+    servmsg = "task " + encode +" "+ e_d +" "+ str(leng)
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + encodeV2(servmsg))
 
-
+def cleanMsg(recv):
+    r = recv.decode()
+    rcvmessage = ""
+    c = 0
+    for i in r:
+        if c >= 6:
+            rcvmessage += i
+        c += 1
+    return rcvmessage.replace("\x00", "")
 def encodeV2(msg):
 #Encode the message
     uMsg = ""
@@ -36,8 +44,9 @@ def encodeV2(msg):
 def shiftEncode(msg, key):
     out = ""
     for i in msg:
-        ascii = ord(i) + key
+        ascii = (ord(i) + int(key)) % (2**8)
         out += chr(ascii)
+    print(out)
     return out
 
 def encodeVigenere(msg, key):
@@ -60,6 +69,6 @@ def decodeVigenere(msg, key):
         j = i % len(lkey)
         charmsg = ord(lmsg[i])
         charkey = ord(lkey[j])
-        newAscii = ((charmsg - charkey) % 8**8)
+        newAscii = ((charmsg - charkey) % 2**8)
         out += chr(newAscii)
     return out

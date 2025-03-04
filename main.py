@@ -10,29 +10,35 @@ msg = "ABCDEF ouf enfin ça fonctionne pas ?=+*"
 
 
 #def sendMessage(msg, ask, encoding, key)
-def InteractionWithServer(msg, ask, encode, e_d, key):
-    if ask != 't' or ask != 's' or ask != 'i':
-        print(ask[0])
+def InteractionWithServer(leng,encode, e_d):
 
-
-
-    #uMsg = Key.encodeV2(msg)
-    if ask == 't':
-        Key.sendMessage(msg, ask, s, encode,e_d, key)
-    elif ask == 's' :
-        Key.sendS(msg, ask, s, encode,e_d)
+    Key.sendTask(leng, "s", s, encode, e_d)
 
     # Delete unecessary data
-    recv = s.recv(1024)
-    r = recv.decode()
-    rcvmessage = ""
-    c = 0
-    for i in r:
-        if c >= 6:
-            rcvmessage += i
-        c += 1
-    print(rcvmessage.replace("\x00", ""))
+    recv1 = s.recv(1024)
+    rcvmessage1 = Key.cleanMsg(recv1)
+    l = rcvmessage1.split(" ")
+    newKey = l[len(l)-1]
+
+    recv2 = s.recv(1024)
+    rcvmessage2 = Key.cleanMsg(recv2)
+
+    print(rcvmessage1)
+    print(rcvmessage2)
 
 
-InteractionWithServer(msg,ask = 's', encode = "vigenere",e_d = "encode", key="WATER")
-InteractionWithServer(msg,ask = 't', encode="none",e_d = "decode", key="WATER")
+    Key.sendMessage(rcvmessage2 ,ask='s', s=s, encode=encode, key=newKey)
+
+    rcvm = s.recv(1024)
+
+    print(Key.cleanMsg(rcvm))
+
+    rcvm = s.recv(1024)
+
+    print(Key.cleanMsg(rcvm))
+
+
+
+
+
+InteractionWithServer(40, encode = "shift",e_d = "encode")
