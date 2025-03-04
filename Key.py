@@ -1,9 +1,27 @@
 
-def sendMessage(msg, ask, s):
-    uMsg = shiftEncode(msg, 1)
-    uMsg = encodeV2(uMsg)
+def sendMessage(msg, ask, s, encode,e_d, key):
+    eMsg = ""
+    match encode:
+        case "none":
+            eMsg = msg
+        case "vigenere":
+            eMsg = encodeVigenere(msg, key)
+        case "Shift":
+            eMsg = shiftEncode(msg, key)
+        case _:
+            print("Can not encode")
+
+
     # Interaction with the server
-    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
+
+    uMsg = encodeV2(eMsg)
+    s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + uMsg)
+
+
+def sendS(msg, ask, s, encode,e_d):
+    servmsg = "task " + encode +" "+ e_d +" "+ str(len(msg))
+    s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + encodeV2(servmsg))
+
 
 def encodeV2(msg):
 #Encode the message
@@ -40,3 +58,4 @@ def encodeVigenere(msg, key):
     s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
     recv = s.recv(1024)
     r = recv.decode()"""
+
