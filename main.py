@@ -9,20 +9,22 @@ msg = "ABCDEF ouf enfin ça fonctionne pas ?=+*"
 
 
 
-
-def sendMessage(msg, ask, encoding, direction):
+#def sendMessage(msg, ask, encoding, key)
+def InteractionWithServer(msg, ask, encode):
     if ask == 't' or 's' or 'i':
         ask = ask
-    else : print("request unavailable")
+    else:
+        print("request unavailable")
 
 
     #uMsg = Key.encodeV2(msg)
+
     uMsg = Key.shiftEncode(msg, 1)
-    uMsg = Key.encodeV2(uMsg)
+    """uMsg = Key.encodeV2(uMsg)
     # Interaction with the server
-    s.sendall(b"ISC"+ ask + len(msg).to_bytes(2, byteorder="big") + uMsg)
+    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
     recv = s.recv(1024)
-    r = recv.decode()
+    r = recv.decode()"""
 
 
     # Delete unecessary data
@@ -35,4 +37,4 @@ def sendMessage(msg, ask, encoding, direction):
     print(rcvmessage.replace("\x00", ""))
 
 
-sendMessage(msg)
+InteractionWithServer(msg, 'j')
