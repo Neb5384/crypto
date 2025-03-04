@@ -1,13 +1,9 @@
 
-def SendMessage(msg, Key, ask, s):
-    uMsg = Key.shiftEncode(msg, 1)
-    uMsg = Key.encodeV2(uMsg)
+def sendMessage(msg, ask, s):
+    uMsg = shiftEncode(msg, 1)
+    uMsg = encodeV2(uMsg)
     # Interaction with the server
     s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
-
-def ReceiveMessage(s):
-    recv = s.recv(1024)
-    r = recv.decode()
 
 def encodeV2(msg):
 #Encode the message
@@ -37,3 +33,10 @@ def encodeVigenere(msg, key):
         newAscii = ((charmsg + charkey) % 26) + ord('A')
         out += chr(newAscii)
     return out
+
+
+"""uMsg = Key.encodeV2(uMsg)
+    # Interaction with the server
+    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
+    recv = s.recv(1024)
+    r = recv.decode()"""

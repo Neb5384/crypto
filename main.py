@@ -20,18 +20,16 @@ def InteractionWithServer(msg, ask, encode):
     #uMsg = Key.encodeV2(msg)
 
     uMsg = Key.shiftEncode(msg, 1)
-    """uMsg = Key.encodeV2(uMsg)
-    # Interaction with the server
-    s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
-    recv = s.recv(1024)
-    r = recv.decode()"""
 
+    Key.sendMessage(msg, ask, s)
 
     # Delete unecessary data
+    recv = s.recv(1024)
+    r = recv.decode()
     rcvmessage = ""
     c = 0
-    for i in r :
-        if c >= 6 :
+    for i in r:
+        if c >= 6:
             rcvmessage += i
         c += 1
     print(rcvmessage.replace("\x00", ""))
