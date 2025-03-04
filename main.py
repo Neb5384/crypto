@@ -17,9 +17,10 @@ def InteractionWithServer(msg, ask, encode):
         print("request unavailable")
 
 
-    #uMsg = Key.encodeV2(msg)
+
 
     uMsg = Key.shiftEncode(msg, 1)
+    uMsg = Key.encodeV2(msg)
     """uMsg = Key.encodeV2(uMsg)
     # Interaction with the server
     s.sendall(b"ISC" + Key.encodeV2(ask) + len(msg).to_bytes(2, byteorder="big") + uMsg)
@@ -30,11 +31,11 @@ def InteractionWithServer(msg, ask, encode):
     # Delete unecessary data
     rcvmessage = ""
     c = 0
-    for i in r :
+    for i in  :
         if c >= 6 :
             rcvmessage += i
         c += 1
     print(rcvmessage.replace("\x00", ""))
 
 
-InteractionWithServer(msg, 'j')
+InteractionWithServer(msg, 'j',15)

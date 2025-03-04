@@ -32,8 +32,29 @@ def encodeVigenere(msg, key):
     lkey = list(key)
     for i in range(len(msg)):
         j = i % len(lkey)
-        charmsg = ord(lmsg[i]) - ord('A')
-        charkey = ord(lkey[j]) - ord('A')
-        newAscii = ((charmsg + charkey) % 26) + ord('A')
+        charmsg = ord(lmsg[i])
+        charkey = ord(lkey[j])
+        newAscii = ((charmsg + charkey) % 8**8)
         out += chr(newAscii)
     return out
+
+def decodeVigenere(msg, key):
+    out = ""
+    lmsg = list(msg)
+    lkey = list(key)
+    for i in range(len(msg)):
+        j = i % len(lkey)
+        charmsg = ord(lmsg[i])
+        charkey = ord(lkey[j])
+        newAscii = ((charmsg - charkey) % 8**8)
+        out += chr(newAscii)
+    return out
+
+
+msg = "testabc testabc testabc testabc testabc"
+key = "ABC"
+
+newmsg = encodeVigenere(msg,key)
+print(newmsg)
+
+print(decodeVigenere(newmsg,key))
