@@ -1,5 +1,8 @@
 import struct
-
+def RSAMessage(msg, ask, s, n, e):
+    eMsg = RSAencode(msg, n, e)
+    s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
+    print(eMsg)
 
 def sendMessage(msg, ask, s, encode, key):
     eMsg = ""
@@ -12,8 +15,6 @@ def sendMessage(msg, ask, s, encode, key):
 
         case "shift":
             eMsg = shiftEncode(msg, key)
-        case "RSA":
-            eMsg = encode
         case _:
             print("Can not encode")
 
@@ -81,3 +82,10 @@ def decodeVigenere(msg, key):
     return out
 
 def RSAencode(msg, n , e):
+    out = b""
+    for i in msg:
+        iByte = encodeV2(i)
+        j = int.from_bytes(iByte,"big")
+        val = (j ** int(e)) % int(n)
+        out += val.to_bytes(4,"big")
+    return out
