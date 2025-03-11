@@ -42,12 +42,7 @@ def encodeV2(msg):
 
 
 def shiftEncode(msg, key):
-    out = ""
-    for i in msg:
-        ascii = (ord(i) + int(key)) % (2**8)
-        out += chr(ascii)
-    print(out)
-    return out
+
 
 def encodeVigenere(msg, key):
     out = ""

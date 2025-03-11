@@ -19,26 +19,29 @@ def InteractionWithServer(leng,encode, e_d):
     rcvmessage1 = Key.cleanMsg(recv1)
     l = rcvmessage1.split(" ")
     newKey = l[len(l)-1]
-
-    recv2 = s.recv(1024)
-    rcvmessage2 = Key.cleanMsg(recv2)
-
     print(rcvmessage1)
-    print(rcvmessage2)
+
+    if encode == "shift":
+        recv2 = s.recv(1024)
+        rcvmessage2 = Key.cleanMsg(recv2)
 
 
-    Key.sendMessage(rcvmessage2 ,ask='s', s=s, encode=encode, key=newKey)
+        print(rcvmessage2)
 
-    rcvm = s.recv(1024)
 
-    print(Key.cleanMsg(rcvm))
+        Key.sendMessage(rcvmessage2 ,ask='s', s=s, encode=encode, key=newKey)
 
-    rcvm = s.recv(1024)
+        rcvm = s.recv(1024)
 
-    print(Key.cleanMsg(rcvm))
+        print(Key.cleanMsg(rcvm))
+
+        rcvm = s.recv(1024)
+
+        print(Key.cleanMsg(rcvm))
 
 
 
 
 
 InteractionWithServer(40, encode = "shift",e_d = "encode")
+#InteractionWithServer(40, encode="vigenere", e_d= "encode")
