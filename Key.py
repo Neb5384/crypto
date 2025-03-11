@@ -12,6 +12,8 @@ def sendMessage(msg, ask, s, encode, key):
 
         case "shift":
             eMsg = shiftEncode(msg, key)
+        case "RSA":
+            eMsg = encode
         case _:
             print("Can not encode")
 
@@ -78,3 +80,4 @@ def decodeVigenere(msg, key):
         print(out)
     return out
 
+def RSAencode(msg, n , e):

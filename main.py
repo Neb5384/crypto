@@ -25,17 +25,20 @@ def InteractionWithServer(leng,encode, e_d):
 
     print(rcvmessage1)
     print(rcvmessage2)
+    match encode:
+        case "shift":
+            Key.sendMessage(rcvmessage2, ask='s', s=s, encode=encode, key=newKey)
 
+            rcvm = s.recv(1024)
 
-    Key.sendMessage(rcvmessage2 ,ask='s', s=s, encode=encode, key=newKey)
+            print(Key.cleanMsg(rcvm))
 
-    rcvm = s.recv(1024)
+            rcvm = s.recv(1024)
 
-    print(Key.cleanMsg(rcvm))
+            print(Key.cleanMsg(rcvm))
 
-    rcvm = s.recv(1024)
+        case "RSA":
 
-    print(Key.cleanMsg(rcvm))
 
 
 
