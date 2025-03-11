@@ -38,6 +38,7 @@ def InteractionWithServer(leng,encode, e_d):
             print(Key.cleanMsg(rcvm))
 
         case "RSA":
+            n = 0
 
 
 
