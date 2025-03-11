@@ -50,30 +50,30 @@ def shiftEncode(msg, key):
         iByte = encodeV2(i)
         ascii = (int.from_bytes(iByte,"big") + int(key)) % (2**32)
         out += ascii.to_bytes(4,"big")
-    print(out)
     return out
 
 def encodeVigenere(msg, key):
-    out = ""
+    out = b""
     lmsg = list(msg)
     lkey = list(key)
     for i in range(len(msg)):
         j = i % len(lkey)
-        charmsg = ord(lmsg[i])
-        charkey = ord(lkey[j])
-        newAscii = ((charmsg + charkey) % 2**8)
-        out += chr(newAscii)
+        charmsg = int.from_bytes(encodeV2(lmsg[i]),"big")
+        charkey = int.from_bytes(encodeV2(lkey[j]),"big")
+        newAscii = ((charmsg + charkey) % 2**32)
+        out += newAscii.to_bytes(4,"big")
     return out
 
 def decodeVigenere(msg, key):
-    out = ""
+    out = b""
     lmsg = list(msg)
     lkey = list(key)
     for i in range(len(msg)):
         j = i % len(lkey)
-        charmsg = ord(lmsg[i])
-        charkey = ord(lkey[j])
-        newAscii = ((charmsg - charkey) % 2**8)
-        out += chr(newAscii)
+        charmsg = int.from_bytes(encodeV2(lmsg[i]),"big")
+        charkey = int.from_bytes(encodeV2(lkey[j]),"big")
+        newAscii = ((charmsg - charkey) % 2**32)
+        out += newAscii.to_bytes(4,"big")
+        print(out)
     return out
 
