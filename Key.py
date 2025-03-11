@@ -1,11 +1,15 @@
+import struct
+
 
 def sendMessage(msg, ask, s, encode, key):
     eMsg = ""
     match encode:
         case "none":
             eMsg = msg
+            eMsg = encodeV2(eMsg)
         case "vigenere":
             eMsg = encodeVigenere(msg, key)
+
         case "shift":
             eMsg = shiftEncode(msg, key)
         case _:
@@ -14,8 +18,7 @@ def sendMessage(msg, ask, s, encode, key):
 
     # Interaction with the server
 
-    uMsg = encodeV2(eMsg)
-    s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + uMsg)
+    s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
 
 
 def sendTask(leng,ask, s, encode,e_d):
@@ -42,10 +45,11 @@ def encodeV2(msg):
 
 
 def shiftEncode(msg, key):
-    out = ""
+    out = b""
     for i in msg:
-        ascii = (ord(i) + int(key)) % (2**8)
-        out += chr(ascii)
+        iByte = encodeV2(i)
+        ascii = (int.from_bytes(iByte,"big") + int(key)) % (2**32)
+        out += ascii.to_bytes(4,"big")
     print(out)
     return out
 
@@ -57,7 +61,7 @@ def encodeVigenere(msg, key):
         j = i % len(lkey)
         charmsg = ord(lmsg[i])
         charkey = ord(lkey[j])
-        newAscii = ((charmsg + charkey) % 8**8)
+        newAscii = ((charmsg + charkey) % 2**8)
         out += chr(newAscii)
     return out
 
@@ -72,3 +76,4 @@ def decodeVigenere(msg, key):
         newAscii = ((charmsg - charkey) % 2**8)
         out += chr(newAscii)
     return out
+

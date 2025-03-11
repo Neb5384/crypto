@@ -41,4 +41,4 @@ def InteractionWithServer(leng,encode, e_d):
 
 
 
-InteractionWithServer(40, encode = "shift",e_d = "encode")
+InteractionWithServer(40, encode = "vigenere",e_d = "encode")
