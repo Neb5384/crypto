@@ -1,0 +1,44 @@
+import PyQt6.QtWidgets.QMainWindow
+
+import Main
+
+
+import sys
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6 import uic
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()  # Appelle le constructeur de QMainWindow
+        uic.loadUi("windowapp.ui", self)  # Charge l'interface Qt
+        self.initUI()  # Appelle une méthode pour initialiser les éléments
+
+    def initUI(self):
+        #
+
+        self.pushButton_1.clicked.connect(self.on_button_click_shift)
+        self.pushButton_2.clicked.connect(self.on_button_click_vigenere)
+
+    def on_button_click_shift(self):
+        self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="shift", e_d="encode"))
+
+    def on_button_click_vigenere(self):
+        Main.InteractionWithServer(self.spinBox.value(), encode="vigenere", e_d="encode")
+
+if __name__ == "__main__":
+    def except_hook(cls, exception, traceback):
+        sys.__excepthook__(cls, exception, traceback)
+    sys.excepthook = except_hook
+
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+
+    app.exec()
+    sys.exit(app.exec())
+
+    if PyQt6.QtWidgets.QMainWindow.event() == QUIT():
+        s.close
+
+
