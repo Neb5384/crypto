@@ -1,5 +1,6 @@
-import PyQt6.QtWidgets.QMainWindow
+import self
 
+import Key
 import Main
 
 
@@ -15,17 +16,18 @@ class MainWindow(QMainWindow):
         self.initUI()  # Appelle une méthode pour initialiser les éléments
 
     def initUI(self):
-        #
-
         self.pushButton_1.clicked.connect(self.on_button_click_shift)
         self.pushButton_2.clicked.connect(self.on_button_click_vigenere)
+        self.pushButton_3.clicked.connect(self.on_button_click_RSA)
 
     def on_button_click_shift(self):
         self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="shift", e_d="encode"))
 
     def on_button_click_vigenere(self):
-        Main.InteractionWithServer(self.spinBox.value(), encode="vigenere", e_d="encode")
+        self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="vigenere", e_d="encode"))
 
+    def on_button_click_RSA(self):
+        self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="RSA", e_d="encode"))
 if __name__ == "__main__":
     def except_hook(cls, exception, traceback):
         sys.__excepthook__(cls, exception, traceback)
@@ -35,10 +37,13 @@ if __name__ == "__main__":
     window = MainWindow()
     window.show()
 
+
     app.exec()
+    if Main.s.recv(67000) != None:
+        window.addAction(window.textBrowser.append(Key.cleanMsg(Main.s.recv(64000))))
     sys.exit(app.exec())
 
-    if PyQt6.QtWidgets.QMainWindow.event() == QUIT():
-        s.close
+    #if PyQt6.QtWidgets.QMainWindow.event() == QUIT():
+        #s.close
 
 
