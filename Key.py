@@ -1,3 +1,4 @@
+import hashlib
 import struct
 def RSAMessage(msg, ask, s, n, e):
     """
@@ -13,7 +14,7 @@ def RSAMessage(msg, ask, s, n, e):
     s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
     print(eMsg)
 
-def sendMessage(msg, ask, s, encode, key):
+def sendMessage(msg, ask, s, encode, key=0):
     """
     Sending a message to a predefined server with a selected type of encryption.
     :param msg: String
@@ -35,6 +36,11 @@ def sendMessage(msg, ask, s, encode, key):
         case "shift":
             eMsg = shiftEncode(msg, key)
 
+        case "hashing":
+            eMsg = Hashing(msg)
+
+        case "hashingVerify":
+            HashingVerify(msg)
         case _:
             print("Can not encode")
 
@@ -57,6 +63,11 @@ def sendTask(leng, ask, s, encode, e_d):
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + encodeV2(servmsg))
 
 def cleanMsg(recv):
+    '''
+    Change a received message in bytes to String
+    :param recv: Message in bytes
+    :return: Clean message (String)
+    '''
     r = recv.decode()
     rcvmessage = ""
     c = 0
@@ -65,6 +76,7 @@ def cleanMsg(recv):
             rcvmessage += i
         c += 1
     return rcvmessage.replace("\x00", "")
+
 def encodeV2(msg):
     """
     Encode a string into an encode UTF-8 message.
@@ -92,7 +104,6 @@ def shiftEncode(msg, key):
         ascii = (int.from_bytes(iByte,"big") + int(key)) % (2**32)
         out += ascii.to_bytes(4,"big")
     return out
-
 
 def encodeVigenere(msg, key):
     """
@@ -151,3 +162,15 @@ def RSA(msg, n, e):
     enc_bytes = enc_int.to_bytes(4, byteorder="big")
 
     return enc_bytes
+
+def Hashing(msg):
+    hash = str(hashlib.sha256(msg))
+    return encodeV2(hash)
+
+def HashingVerify(msg):
+    l = cleanMsg(msg).split("ISCs@")
+    nl = l[1][4:]
+    al = Hashing(l[0])
+    if al == nl:
+        return "true"
+    else: return "false"

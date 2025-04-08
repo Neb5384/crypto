@@ -16,7 +16,7 @@ def InteractionWithServer(leng, encode, e_d):
     :param e_d: Choice between encode/decode
     :return: An interaction with the server
     """
-    Discussion = ""
+    Conv = ""
 
     # Sending the first message to the server
     Key.sendTask(leng, "s", s, encode, e_d)
@@ -25,12 +25,12 @@ def InteractionWithServer(leng, encode, e_d):
     recv1 = s.recv(1024)
     rcvmessage1 = Key.cleanMsg(recv1)
     print(rcvmessage1)
-    Discussion += rcvmessage1 + "\n"
+    Conv += rcvmessage1 + "\n"
 
     recv2 = s.recv(1024)
     rcvmessage2 = Key.cleanMsg(recv2)
     print(rcvmessage2)
-    Discussion += rcvmessage2 + "\n"
+    Conv += rcvmessage2 + "\n"
 
     # Turning rcvd message into an Array
     list = rcvmessage1.split(" ")
@@ -39,10 +39,14 @@ def InteractionWithServer(leng, encode, e_d):
     rcvm = b""
     match encode:
         case "shift":
-            newKey = list[len(list) - 1]
-            Key.sendMessage(rcvmessage2, ask='s', s=s, encode=encode, key=newKey)
+            if e_d == "encode":
+                newKey = list[len(list) - 1]
+                Key.sendMessage(rcvmessage2, ask='s', s=s, encode=encode, key=newKey)
 
-            rcvm = s.recv(len(rcvmessage1) * 1000)
+                rcvm = s.recv(len(rcvmessage1) * 1000)
+            elif e_d == "decode":
+                a = ""
+            else: Conv = "Can't do this type of task"
 
         case "vigenere":
             newKey = list[len(list) - 1]
@@ -69,5 +73,36 @@ def InteractionWithServer(leng, encode, e_d):
 
         case _:
             pass
-    Discussion += Key.cleanMsg(rcvm) + "\n"
-    return Discussion
+    Conv += Key.cleanMsg(rcvm) + "\n"
+    return Conv
+
+def InteractionWithServer(verify_hash):
+    ask = "s"
+    Conv = ""
+
+    servmsg = "task hash " + verify_hash
+    s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + Key.encodeV2(servmsg))
+
+    match verify_hash:
+        case "hash":
+            rcvm1 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm1))
+
+            rcvm2 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm2))
+
+            Key.sendMessage(rcvm2, "s", s, "hashing")
+            rcvm = s.recv(65000000)
+            print(Key.cleanMsg(rcvm))
+
+        case "verify":
+            rcvm1 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm1))
+
+            rcvm2 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm2))
+
+            Key.sendMessage(rcvm2, "s", s, "hashingVerify")
+            
+
+InteractionWithServer("verify")

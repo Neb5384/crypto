@@ -28,6 +28,18 @@ class MainWindow(QMainWindow):
 
     def on_button_click_RSA(self):
         self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="RSA", e_d="encode"))
+
+    def on_button_click_Listen(self):
+        while True:
+            msg = Main.s.recv(65000000)
+            self.textBrowser.append(Key.cleanMsg(msg))
+            if self.on_button_click_StopListening(): False
+
+    def on_button_click_StopListening(self): ()
+
+
+
+
 if __name__ == "__main__":
     def except_hook(cls, exception, traceback):
         sys.__excepthook__(cls, exception, traceback)
@@ -39,11 +51,7 @@ if __name__ == "__main__":
 
 
     app.exec()
-    if Main.s.recv(67000) != None:
-        window.addAction(window.textBrowser.append(Key.cleanMsg(Main.s.recv(64000))))
     sys.exit(app.exec())
 
-    #if PyQt6.QtWidgets.QMainWindow.event() == QUIT():
-        #s.close
 
 
