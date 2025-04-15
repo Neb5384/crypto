@@ -1,96 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Cryptography</class>
+ <widget class="QMainWindow" name="Cryptography">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>653</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>230</y>
+      <width>551</width>
+      <height>361</height>
+     </rect>
+    </property>
+   </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>102</x>
-      <y>10</y>
-      <width>551</width>
-      <height>80</height>
+      <x>110</x>
+      <y>20</y>
+      <width>421</width>
+      <height>101</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton_1">
-       <property name="text">
-        <string>shift</string>
-       </property>
+      <widget class="QListWidget" name="listWidget">
+       <item>
+        <property name="text">
+         <string>Vigenere</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shift</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>RSA</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Hash</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Diffie-Hellman</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="text">
-        <string>vigenere</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="text">
-        <string>RSA</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Length</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="spinBox"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
-   <widget class="QSpinBox" name="spinBox">
+   <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>110</y>
-      <width>48</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>600</x>
-      <y>90</y>
-      <width>41</width>
-      <height>16</height>
+      <x>580</x>
+      <y>120</y>
+      <width>81</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="text">
-     <string>length</string>
+     <string>send</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
+   <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>90</y>
-      <width>491</width>
-      <height>411</height>
+      <x>110</x>
+      <y>120</y>
+      <width>24</width>
+      <height>78</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>text</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>200</y>
+      <width>25</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>key </string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit_2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>200</y>
+      <width>441</width>
+      <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QScrollBar" name="verticalScrollBar">
+   <widget class="QPlainTextEdit" name="plainTextEdit">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>140</y>
-      <width>16</width>
-      <height>361</height>
+      <x>140</x>
+      <y>120</y>
+      <width>441</width>
+      <height>81</height>
      </rect>
     </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>20</y>
+      <width>121</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Automatic send</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>170</y>
+      <width>81</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>decode</string>
     </property>
    </widget>
   </widget>

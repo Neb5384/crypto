@@ -1,5 +1,10 @@
 import hashlib
+import math
+import random
 import struct
+from random import randint
+
+
 def RSAMessage(msg, ask, s, n, e):
     """
     Message send with RSA encryption.
@@ -40,7 +45,10 @@ def sendMessage(msg, ask, s, encode, key=0):
             eMsg = Hashing(msg)
 
         case "hashingVerify":
-            HashingVerify(msg)
+            eMsg = HashingVerify(msg)
+
+        case "DifHel":
+            eMsg = encodeV2(msg)
         case _:
             print("Can not encode")
 
@@ -89,7 +97,6 @@ def encodeV2(msg):
         letter = (4-len(uLetter))* "\x00" + i
         uMsg += letter
     return uMsg.encode("UTF-8")
-
 
 def shiftEncode(msg, key):
     """
@@ -169,8 +176,63 @@ def Hashing(msg):
 
 def HashingVerify(msg):
     l = cleanMsg(msg).split("ISCs@")
-    nl = l[1][4:]
-    al = Hashing(l[0])
+    nl = l[1][4:].encode()
+    al = Hashing(l[0].encode())
     if al == nl:
-        return "true"
-    else: return "false"
+        return encodeV2("true")
+    else: return encodeV2("false")
+
+
+#================================= Diffie - Hellman =====================================
+
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def findP():
+    '''
+    Generates a random number for P (prime number btwn 0 and 5000)
+    :return: Prime number
+    '''
+    while True:
+        P = random.randint(2, 5000)
+        if is_prime(P):
+            return P
+def fingG(P):
+    phi = P-1
+    n = phi
+    i = 2
+    facteurs = []
+    while i * i <= n:
+        if n % i == 0:
+            facteurs.append(i)
+            while n % i == 0:
+                n //= i
+        i += 1
+        if n > 1 :
+            facteurs.append(n)
+    G = 0
+    for g in range(2 , P):
+        ok = True
+        for f in facteurs:
+            if pow(g, phi // f, P) == 1:
+                ok = False
+                break
+        if ok:
+            G = g
+
+    return G
+
+def publicKey(G,P, a):
+    res = pow(G, a) % P
+    return res
+
+def sharedKey(P, a, skey):
+    res = pow(skey, a) % P
+    return res
+
+

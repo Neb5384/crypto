@@ -1,4 +1,3 @@
-import self
 
 import Key
 import Main
@@ -16,10 +15,7 @@ class MainWindow(QMainWindow):
         self.initUI()  # Appelle une méthode pour initialiser les éléments
 
     def initUI(self):
-        self.pushButton_1.clicked.connect(self.on_button_click_shift)
-        self.pushButton_2.clicked.connect(self.on_button_click_vigenere)
-        self.pushButton_3.clicked.connect(self.on_button_click_RSA)
-
+        pass
     def on_button_click_shift(self):
         self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="shift", e_d="encode"))
 

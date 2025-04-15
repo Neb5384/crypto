@@ -1,3 +1,4 @@
+import random
 import socket
 
 
@@ -76,14 +77,23 @@ def InteractionWithServer(leng, encode, e_d):
     Conv += Key.cleanMsg(rcvm) + "\n"
     return Conv
 
-def InteractionWithServer(verify_hash):
+def InteractionWithServerShort(method):
     ask = "s"
     Conv = ""
+    task = ""
 
-    servmsg = "task hash " + verify_hash
+    if method == "hash":
+        method = "hash hash"
+    elif method == "verify":
+        method = "hash verify"
+    else:
+        method = "DifHel"
+
+
+    servmsg = "task " + method
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + Key.encodeV2(servmsg))
 
-    match verify_hash:
+    match method:
         case "hash":
             rcvm1 = s.recv(65000000)
             print(Key.cleanMsg(rcvm1))
@@ -103,6 +113,37 @@ def InteractionWithServer(verify_hash):
             print(Key.cleanMsg(rcvm2))
 
             Key.sendMessage(rcvm2, "s", s, "hashingVerify")
-            
 
-InteractionWithServer("verify")
+            rcvm3 = s.recv(650000)
+            print(Key.cleanMsg(rcvm3))
+
+        case "DifHel":
+            rcvm1 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm1))
+
+            P = Key.findP()
+            G = Key.fingG(P)
+            Keys = f"{P},{G}"
+            Key.sendMessage(Keys, "s", s, "DifHel")
+
+            rcvm2 = s.recv(65000000)
+            print(Key.cleanMsg(rcvm2))
+
+            rcvm3 = s.recv(650000)
+            print(Key.cleanMsg(rcvm3))
+            serverKey = int(Key.cleanMsg(rcvm3))
+
+            a = random.randint(2, 10)
+            msg = str(Key.publicKey(G, P, a))
+            Key.sendMessage(msg,  "s", s, "DifHel")
+
+            rcvm3 = s.recv(650000)
+            print(Key.cleanMsg(rcvm3))
+            msg = str(Key.sharedKey(P, a, serverKey))
+            Key.sendMessage(msg, "s", s, "DifHel")
+
+            rcvm3 = s.recv(650000)
+            print(Key.cleanMsg(rcvm3))
+
+InteractionWithServerShort("DifHel")
+
