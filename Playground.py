@@ -1,32 +1,28 @@
-import random
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout
 
-def Prime():
-    n = 0
-    var = False
-    while var == False:
-        var = True
-        n = random.randint(2, 100)
-        for i in range(2, 100):
-            if i != n and n % i == 0:
-                var = False
-    return n
-def Rsa():
-    p1 = Prime()
-    p2 = Prime()
-    while p2 == p1:
-        p2 = Prime()
-    N = p1 * p2
-    T = (p1-1) * (p2 - 1)
-    E = Prime()
-    var = False
-    while var == False:
-        if E < T and T % E != 0:
-            var = True
-        else :
-            E = Prime()
-    while var == True :
-        D = random.randint(2, 100)
-        Product = D * E
-        if Product % T == 1 :
-            var = False
+class SimpleWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.vlayout = QVBoxLayout()
+        self.text = QLabel()
+        self.vlayout.addWidget(self.text)
 
+        self.counter = 0
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.timer_callback)
+        self.timer.start(250)
+
+        self.setLayout(self.vlayout)
+
+    def timer_callback(self):
+        self.text.setText(str(self.counter))
+        self.counter += 1
+
+if __name__ == "__main__":
+
+    qApp = QApplication([])
+    main_window = SimpleWindow()
+    main_window.show()
+    qApp.exec()

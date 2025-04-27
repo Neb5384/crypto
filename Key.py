@@ -5,6 +5,7 @@ import struct
 from random import randint
 
 
+
 def RSAMessage(msg, ask, s, n, e):
     """
     Message send with RSA encryption.
@@ -17,7 +18,7 @@ def RSAMessage(msg, ask, s, n, e):
     """
     eMsg = RSAencode(msg, n, e)
     s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
-    print(eMsg)
+
 
 def sendMessage(msg, ask, s, encode, key=0):
     """

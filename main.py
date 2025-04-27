@@ -1,8 +1,8 @@
 import random
 import socket
 
-
 import Key
+
 
 # Connecting to the server
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -70,8 +70,6 @@ def InteractionWithServer(leng, encode, e_d):
             Key.RSAMessage(rcvmessage2, ask='s',s=s, n=n, e=e)
             rcvm = s.recv(65000)
 
-            print(Key.cleanMsg(rcvm))
-
         case _:
             pass
     Conv += Key.cleanMsg(rcvm) + "\n"
@@ -91,59 +89,74 @@ def InteractionWithServerShort(method):
 
 
     servmsg = "task " + method
+    Conv += servmsg
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + Key.encodeV2(servmsg))
 
     match method:
         case "hash":
-            rcvm1 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm1))
-
-            rcvm2 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm2))
-
-            Key.sendMessage(rcvm2, "s", s, "hashing")
             rcvm = s.recv(65000000)
-            print(Key.cleanMsg(rcvm))
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
+
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
+
+            Key.sendMessage(rcvm, "s", s, "hashing")
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
 
         case "verify":
-            rcvm1 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm1))
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
 
-            rcvm2 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm2))
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
 
-            Key.sendMessage(rcvm2, "s", s, "hashingVerify")
+            Key.sendMessage(rcvm, "s", s, "hashingVerify")
 
-            rcvm3 = s.recv(650000)
-            print(Key.cleanMsg(rcvm3))
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
 
         case "DifHel":
-            rcvm1 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm1))
+            rcvm = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm)
+            Conv += rcmessage + "\n"
 
             P = Key.findP()
             G = Key.fingG(P)
             Keys = f"{P},{G}"
             Key.sendMessage(Keys, "s", s, "DifHel")
 
-            rcvm2 = s.recv(65000000)
-            print(Key.cleanMsg(rcvm2))
+            rcvm1 = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm1)
+            Conv += rcmessage + "\n"
 
-            rcvm3 = s.recv(650000)
-            print(Key.cleanMsg(rcvm3))
-            serverKey = int(Key.cleanMsg(rcvm3))
+
+            rcvm2 = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm2)
+            Conv += rcmessage + "\n"
+            serverKey = int(Key.cleanMsg(rcvm2))
 
             a = random.randint(2, 10)
             msg = str(Key.publicKey(G, P, a))
             Key.sendMessage(msg,  "s", s, "DifHel")
 
-            rcvm3 = s.recv(650000)
-            print(Key.cleanMsg(rcvm3))
+            rcvm3 = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm3)
+            Conv += rcmessage + "\n"
             msg = str(Key.sharedKey(P, a, serverKey))
             Key.sendMessage(msg, "s", s, "DifHel")
 
-            rcvm3 = s.recv(650000)
-            print(Key.cleanMsg(rcvm3))
+            rcvm4 = s.recv(65000000)
+            rcmessage = Key.cleanMsg(rcvm4)
+            Conv += rcmessage + "\n"
+        case _: pass
+    return Conv
 
-InteractionWithServerShort("DifHel")
+
 
