@@ -4,6 +4,7 @@ import random
 import struct
 from random import randint
 
+import Main
 
 
 def RSAMessage(msg, ask, s, n, e):
@@ -18,7 +19,7 @@ def RSAMessage(msg, ask, s, n, e):
     """
     eMsg = RSAencode(msg, n, e)
     s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
-
+    return Main.yConv(cleanMsg(eMsg))
 
 def sendMessage(msg, ask, s, encode, key=0):
     """
@@ -56,7 +57,7 @@ def sendMessage(msg, ask, s, encode, key=0):
 
     # Interaction with the server
     s.sendall(b"ISC" + ask.encode() + len(msg).to_bytes(2, byteorder="big") + eMsg)
-
+    return Main.yConv(cleanMsg(eMsg))
 
 def sendTask(leng, ask, s, encode, e_d):
     """
@@ -70,14 +71,14 @@ def sendTask(leng, ask, s, encode, e_d):
     """
     servmsg = "task " + encode +" "+ e_d +" "+ str(leng)
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + encodeV2(servmsg))
-
+    return Main.yConv(servmsg)
 def cleanMsg(recv):
     '''
     Change a received message in bytes to String
     :param recv: Message in bytes
     :return: Clean message (String)
     '''
-    r = recv.decode()
+    r = recv.decode('utf-8', errors='replace')
     rcvmessage = ""
     c = 0
     for i in r:
@@ -177,7 +178,8 @@ def Hashing(msg):
 
 def HashingVerify(msg):
     l = cleanMsg(msg).split("ISCs@")
-    nl = l[1][4:].encode()
+    n = l[1][4:]
+    nl = n.encode("UTF-8")
     al = Hashing(l[0].encode())
     if al == nl:
         return encodeV2("true")

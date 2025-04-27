@@ -18,10 +18,12 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()  # Appelle le constructeur de QMainWindow
         loadUi("windowapp.ui", self)  # Charge l'interface Qt
-        # Socket setup
-        self.socket_lock = Lock()  # Thread-safe access to socket
+
+        # Configuration du socket
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.settimeout(0.1)  # Short timeout for non-blocking checks
+        self.s.settimeout(0.1)  # Timeout pour les opérations de socket
+        self.s.connect(("vlbelintrocrypto.hevs.ch", 6000))
+
 
         # Timer setup
         self.timer = QTimer()
@@ -34,16 +36,12 @@ class MainWindow(QMainWindow):
     def timer_callback(self):
         """Check for incoming messages periodically"""
         try:
-            with self.socket_lock:
-                # Try to receive data (non-blocking due to timeout)
-                data = self.s.recv(1040)
-
+            data = self.s.recv(1024)
             if data:
-                message = Key.cleanMsg(data)
-                if message:  # Only append if message isn't empty
-                    self.textBrowser.append(f"Server: {message}")
+                message = self.clean_message(data.decode('utf-8'))
+                self.textBrowser.append(f"Server: {message}")
         except socket.timeout:
-            pass  # No data available
+            pass  # Pas de données disponibles
         except ConnectionResetError:
             self.textBrowser.append("Connection lost!")
             self.timer.stop()
@@ -59,15 +57,19 @@ class MainWindow(QMainWindow):
                 self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="RSA", e_d="encode"))
             case "Hash":
                 self.textBrowser.append(Main.InteractionWithServerShort("hash"))
-                self.textBrowser.append(Main.InteractionWithServerShort("verify"))
+                #self.textBrowser.append(Main.InteractionWithServerShort("verify"))
             case "Diffie-Hellman":
                 self.textBrowser.append(Main.InteractionWithServerShort("DifHel"))
             case _: self.textBrowser.append("None encryption method selected")
 
     def onButtonClickedSend(self, methode, message, key):
+        if not message:
+            self.textBrowser.append("No message to send!")
+            return
+
         str(Key)
         key.replace(" ", "")
-        if key == "":
+        if key == "" and methode != "Hash":
             # Key.sendMessage(message, "s", s = Main.s, encode = "none")
             self.textBrowser.append(message)
         else:
@@ -75,16 +77,16 @@ class MainWindow(QMainWindow):
                 case "Shift":
                     try :
                         nombre = int(key)
-                        #Key.sendMessage(message, "s", s = Main.s, encode = "shift", key = nombre)
-                        self.textBrowser.append(Key.cleanMsg(Key.shiftEncode(message, nombre)))
+                        Key.sendMessage(message, "s", s = Main.s, encode = "shift", key = nombre)
+                        self.textBrowser.append("You: " + Key.cleanMsg(Key.shiftEncode(message, nombre)))
                     except ValueError:
                         self.textBrowser.append("An error occurred while processing your request.")
                 case "Vigenere":
-                    # Key.sendMessage(message, "s", s = Main.s, encode = "vigenere", key = key)
-                    self.textBrowser.append()
+                    Key.sendMessage(message, "s", s = Main.s, encode = "vigenere", key = key)
+                    self.textBrowser.append("You: Message send")
                 case "Hash":
-                    #Key.sendMessage(message, ask= "s", s = Main.s, encode= "hashing")
-                    self.textBrowser.append(Key.cleanMsg(Key.Hashing(message)))
+                    Key.sendMessage(message.encode("UTF-"), ask= "s", s = Main.s, encode= "hashing")
+                    self.textBrowser.append("You: " + Key.cleanMsg(Key.Hashing(message.encode("UTF-8"))))
                 case "RSA":
                     l = key.split("/")
                     if len(l) == 2:
@@ -92,15 +94,15 @@ class MainWindow(QMainWindow):
                             n = int(l[0])
                             q = int(l[1])
                             if Key.is_prime(n) and Key.is_prime(q):
-                                #Key.RSAMessage(message, ask= "s", s= Main.s, n= n, e = n*q)
-                                self.textBrowser.append(Key.cleanMsg(Key.RSAencode(message, n, n*q)))
+                                Key.RSAMessage(message, ask= "s", s= Main.s, n= n, e = n*q)
+                                self.textBrowser.append("You : " + Key.cleanMsg(Key.RSAencode(message, n, n*q)))
                             else: self.textBrowser.append("The Keys are not prime numbers.")
                         except ValueError:
                             self.textBrowser.append("At least one LKey is not a number.")
                     else: self.textBrowser.append("Invalid Key. Must be \"n/q\".")
                 case _:
                     self.textBrowser.append(message)
-               #Key.sendMessage(message, ask= "s", s= Main.s, encode="none")
+                    Key.sendMessage(message, ask= "s", s= Main.s, encode="none")
 
 
 if __name__ == "__main__":
