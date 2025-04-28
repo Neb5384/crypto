@@ -87,6 +87,9 @@ def cleanMsg(recv):
         c += 1
     return rcvmessage.replace("\x00", "")
 
+def cleanMsg2(recv):
+    r = recv.decode('utf-8', errors='replace')
+    return r.replace("\x00", "")
 def encodeV2(msg):
     """
     Encode a string into an encode UTF-8 message.
@@ -173,7 +176,7 @@ def RSA(msg, n, e):
     return enc_bytes
 
 def Hashing(msg):
-    hash = str(hashlib.sha256(msg))
+    hash = hashlib.sha256(msg).hexdigest()
     return encodeV2(hash)
 
 def HashingVerify(msg):

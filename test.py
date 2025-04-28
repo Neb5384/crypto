@@ -2,7 +2,7 @@ from socket import socket
 from threading import Lock
 
 from PyQt6.QtCore import QTimer
-
+from Key import cleanMsg, cleanMsg2
 import Key
 import Main
 
@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
         # Timer setup
         self.timer = QTimer()
         self.timer.timeout.connect(self.timer_callback)
+
         self.timer.start(250)  # Check every 250ms
 
         self.pushButton.clicked.connect(lambda: self.onButtonClickedSend(methode= (self.listWidget.currentItem().text() if self.listWidget.currentItem() else "Aucune méthode sélectionnée"), message= self.plainTextEdit.toPlainText(), key= self.plainTextEdit_2.toPlainText()))
@@ -38,7 +39,7 @@ class MainWindow(QMainWindow):
         try:
             data = self.s.recv(1024)
             if data:
-                message = self.clean_message(data.decode('utf-8'))
+                message = cleanMsg(data)
                 self.textBrowser.append(f"Server: {message}")
         except socket.timeout:
             pass  # Pas de données disponibles
@@ -56,8 +57,8 @@ class MainWindow(QMainWindow):
             case "RSA":
                 self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="RSA", e_d="encode"))
             case "Hash":
-                self.textBrowser.append(Main.InteractionWithServerShort("hash"))
-                #self.textBrowser.append(Main.InteractionWithServerShort("verify"))
+                #self.textBrowser.append(Main.InteractionWithServerShort("hash"))
+                self.textBrowser.append(Main.InteractionWithServerShort("verify"))
             case "Diffie-Hellman":
                 self.textBrowser.append(Main.InteractionWithServerShort("DifHel"))
             case _: self.textBrowser.append("None encryption method selected")
@@ -70,23 +71,23 @@ class MainWindow(QMainWindow):
         str(Key)
         key.replace(" ", "")
         if key == "" and methode != "Hash":
-            # Key.sendMessage(message, "s", s = Main.s, encode = "none")
-            self.textBrowser.append(message)
+            Key.sendMessage(message, "s", s = Main.s, encode = "none")
+            self.textBrowser.append("You: " + message)
         else:
             match methode:
                 case "Shift":
                     try :
                         nombre = int(key)
                         Key.sendMessage(message, "s", s = Main.s, encode = "shift", key = nombre)
-                        self.textBrowser.append("You: " + Key.cleanMsg(Key.shiftEncode(message, nombre)))
+                        self.textBrowser.append("You: " + cleanMsg2(Key.shiftEncode(message, nombre)))
                     except ValueError:
                         self.textBrowser.append("An error occurred while processing your request.")
                 case "Vigenere":
                     Key.sendMessage(message, "s", s = Main.s, encode = "vigenere", key = key)
-                    self.textBrowser.append("You: Message send")
+                    self.textBrowser.append("You: " + cleanMsg2(Key.encodeVigenere(message, key)))
                 case "Hash":
                     Key.sendMessage(message.encode("UTF-"), ask= "s", s = Main.s, encode= "hashing")
-                    self.textBrowser.append("You: " + Key.cleanMsg(Key.Hashing(message.encode("UTF-8"))))
+                    self.textBrowser.append("You: " + cleanMsg2((Key.Hashing(message.encode("UTF-8")))))
                 case "RSA":
                     l = key.split("/")
                     if len(l) == 2:

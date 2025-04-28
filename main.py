@@ -84,32 +84,36 @@ def InteractionWithServerShort(method):
     task = ""
 
     if method == "hash":
-        method = "hash hash"
+        task = "hash hash"
     elif method == "verify":
-        method = "verify"
+        task = "hash verify"
     else:
-        method = "DifHel"
+        task = "DifHel"
 
 
-    servmsg = "task " + method
+    servmsg = "task " + task
     Conv += yConv(servmsg)
     s.sendall(b"ISC" + ask.encode() + len(servmsg).to_bytes(2, byteorder="big") + Key.encodeV2(servmsg))
+    print(Conv)
 
     match method:
         case "hash":
+            print("yes")
             rcvm = s.recv(65000000)
             rcmessage = Key.cleanMsg(rcvm)
-            Conv += rcmessage + "\n"
+            Conv += sConv(rcmessage)
             print(rcmessage)
 
-            '''rcvm = s.recv(65000000)
-            rcmessage = Key.cleanMsg(rcvm)
-            Conv += rcmessage + "\n"
-
-            Key.sendMessage(rcvm, "s", s, "hashing")
             rcvm = s.recv(65000000)
             rcmessage = Key.cleanMsg(rcvm)
-            Conv += rcmessage + "\n"'''
+            Conv += sConv(rcmessage)
+            print(rcvm)
+
+
+            Conv += Key.sendMessage(rcvm, "s", s, "hashing")
+            #rcvm = s.recv(65000000)
+            #rcmessage = Key.cleanMsg(rcvm)
+            #Conv += rcmessage + "\n"
 
         case "verify":
             rcvm = s.recv(65000000)
@@ -122,11 +126,11 @@ def InteractionWithServerShort(method):
             print(rcmessage)
             Conv += rcmessage + "\n"
 
-            Key.sendMessage(rcvm, "s", s, "hashingVerify")
+            Conv += Key.sendMessage(rcvm, "s", s, "hashingVerify")
 
-            rcvm = s.recv(65000000)
-            rcmessage = Key.cleanMsg(rcvm)
-            Conv += rcmessage + "\n"
+            #rcvm = s.recv(65000000)
+            #rcmessage = Key.cleanMsg(rcvm)
+            #Conv += rcmessage + "\n"
 
         case "DifHel":
             rcvm = s.recv(65000000)
@@ -165,6 +169,5 @@ def InteractionWithServerShort(method):
 
         case _: pass
     return Conv
-
 
 
