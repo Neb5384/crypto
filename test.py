@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         loadUi("windowapp.ui", self)  # Charge l'interface Qt
 
         # Configuration du socket
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Create a new socket / arg1 using IPV4 and arg2 TCP ocket
         self.s.settimeout(0.1)  # Timeout pour les opérations de socket
         self.s.connect(("vlbelintrocrypto.hevs.ch", 6000))
 
@@ -35,7 +35,10 @@ class MainWindow(QMainWindow):
         self.pushButton_2.clicked.connect(lambda: self.onButtonClickedTask(methode= self.listWidget.currentItem().text() if self.listWidget.currentItem() else "Aucune méthode sélectionnée"))
 
     def timer_callback(self):
-        """Check for incoming messages periodically"""
+        '''
+        Check for incoming messages periodically.
+        :return: Print the messages incoming from the server
+        '''
         try:
             data = self.s.recv(1024)
             if data:
@@ -49,6 +52,11 @@ class MainWindow(QMainWindow):
         except Exception as e:
             self.textBrowser.append(f"Error receiving: {str(e)}")
     def onButtonClickedTask(self,methode = str):
+        '''
+        Send a task to the server.
+        :param methode: Encoding Choice
+        :return: Print the conversation with the server
+        '''
         match methode:
             case "Shift":
                 self.textBrowser.append(Main.InteractionWithServer(self.spinBox.value(), encode="shift", e_d="encode"))
@@ -83,8 +91,11 @@ class MainWindow(QMainWindow):
                     except ValueError:
                         self.textBrowser.append("An error occurred while processing your request.")
                 case "Vigenere":
-                    Key.sendMessage(message, "s", s = Main.s, encode = "vigenere", key = key)
-                    self.textBrowser.append("You: " + cleanMsg2(Key.encodeVigenere(message, key)))
+                    if len(key) <= len(message):
+                        Key.sendMessage(message, "s", s = Main.s, encode = "vigenere", key = key)
+                        self.textBrowser.append("You: " + cleanMsg2(Key.encodeVigenere(message, key)))
+                    else:
+                        self.textBrowser.append("Can not encode! The key is too long.")
                 case "Hash":
                     Key.sendMessage(message.encode("UTF-"), ask= "s", s = Main.s, encode= "hashing")
                     self.textBrowser.append("You: " + cleanMsg2((Key.Hashing(message.encode("UTF-8")))))

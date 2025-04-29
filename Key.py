@@ -135,18 +135,6 @@ def encodeVigenere(msg, key):
         out += newAscii.to_bytes(4,"big")
     return out
 
-def decodeVigenere(msg, key):
-    out = b""
-    lmsg = list(msg)
-    lkey = list(key)
-    for i in range(len(msg)):
-        j = i % len(lkey)
-        charmsg = int.from_bytes(encodeV2(lmsg[i]),"big")
-        charkey = int.from_bytes(encodeV2(lkey[j]),"big")
-        newAscii = ((charmsg - charkey) % 2**32)
-        out += newAscii.to_bytes(4,"big")
-        print(out)
-    return out
 
 def RSAencode(msg, n , e):
     """

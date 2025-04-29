@@ -79,6 +79,11 @@ def InteractionWithServer(leng, encode, e_d):
     return Conv
 
 def InteractionWithServerShort(method):
+    '''
+    Interaction with the server for hash and DifHel
+    :param method: Choice of the encoding task (hash/verify/DifHel
+    :return: Conversation with the server
+    '''
     ask = "s"
     Conv = ""
     task = ""
